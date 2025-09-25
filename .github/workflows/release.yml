@@ -19,6 +19,10 @@ jobs:
         uses: dtolnay/rust-toolchain@stable
       - name: Install dependencies
         run: pnpm install
+      - name: Install system dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y libglib2.0-dev pkg-config
       - name: Build app
         run: pnpm tauri build
       - name: Release
