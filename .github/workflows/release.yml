@@ -80,11 +80,13 @@ jobs:
       - name: Build app
         run: pnpm tauri build ${{ matrix.args }}
 
-      # Create GitHub release
+      # Create GitHub release with signing for Windows
       - name: Release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PASSWORD: ${{ secrets.TAURI_SIGNING_PASSWORD }} # optional, if your cert has a password
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Release ${{ github.ref_name }}"
