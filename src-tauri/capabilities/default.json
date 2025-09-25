@@ -15,6 +15,7 @@
     "fs:allow-appdata-read",
     "fs:allow-appdata-read-recursive",
     "fs:allow-copy-file",
-    "fs:allow-read-dir"
+    "fs:allow-read-dir",
+    "updater:default"
   ]
 }

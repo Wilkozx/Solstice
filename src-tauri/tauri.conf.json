@@ -33,7 +33,8 @@
   },
   "plugins": {
     "fs": {},
-    "updater": {
+    "updater": { 
+      "active": true,
       "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQzNkEzRDhBNzM0OTE5MEIKUldRTEdVbHppajFxMHdmSWI4eUUrbWNzMEJMc3FyNk1Yd2xaQ0cxYStpV05lN0dKTFEyWW11QUcK",
       "endpoints": [
         "https://github.com/Wilkozx/Solstice/releases/latest/download/latest.json"
