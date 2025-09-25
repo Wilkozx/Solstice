@@ -6,30 +6,89 @@ on:
 
 jobs:
   release:
-    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        include:
+          - platform: "macos-latest" # Arm Macs
+            args: "--target aarch64-apple-darwin"
+          - platform: "macos-latest" # Intel Macs
+            args: "--target x86_64-apple-darwin"
+          - platform: "ubuntu-22.04" # Linux
+            args: ""
+          - platform: "windows-latest" # Windows
+            args: ""
+
+    runs-on: ${{ matrix.platform }}
     steps:
       - uses: actions/checkout@v4
+
+      # Set up Node.js
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
           node-version: 20
+
+      # Install pnpm
       - name: Setup pnpm
         run: npm install -g pnpm
-      - name: Install Rust
+
+      # Install Rust
+      - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
-      - name: Install dependencies
-        run: pnpm install
+        with:
+          targets: ${{ matrix.platform == 'macos-latest' && 'aarch64-apple-darwin,x86_64-apple-darwin' || '' }}
+
+      # Install system dependencies (Linux only)
       - name: Install system dependencies
+        if: matrix.platform == 'ubuntu-22.04'
         run: |
           sudo apt-get update
-          sudo apt-get install -y libglib2.0-dev pkg-config
+          sudo apt-get install -y \
+            build-essential \
+            libwebkit2gtk-4.0-dev \
+            libwebkit2gtk-4.1-dev \
+            libgtk-3-dev \
+            libglib2.0-dev \
+            libcairo2-dev \
+            libpango1.0-dev \
+            libgdk-pixbuf2.0-dev \
+            libatk1.0-dev \
+            libsecret-1-dev \
+            libappindicator3-dev \
+            librsvg2-dev \
+            pkg-config \
+            curl \
+            git \
+            libx11-dev \
+            libxcomposite-dev \
+            libxdamage-dev \
+            libxfixes-dev \
+            libxi-dev \
+            libxtst-dev \
+            libnss3-dev \
+            libasound2-dev \
+            patchelf
+
+      # Install Node dependencies
+      - name: Install dependencies
+        run: pnpm install
+
+      # Build the Tauri app
       - name: Build app
-        run: pnpm tauri build
+        run: pnpm tauri build ${{ matrix.args }}
+
+      # Create GitHub release
       - name: Release
         uses: tauri-apps/tauri-action@v0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Release ${{ github.ref_name }}"
           releaseBody: "Automated release"
           draft: false
           prerelease: false
+          args: ${{ matrix.args }}
