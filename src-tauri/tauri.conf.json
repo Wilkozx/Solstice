@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.tauri.app/config/2",
+  "productName": "sbtracker",
+  "version": "0.1.0",
+  "identifier": "com.sbtracker.app",
+  "build": {
+    "beforeDevCommand": "pnpm dev",
+    "devUrl": "http://localhost:1420",
+    "beforeBuildCommand": "pnpm build",
+    "frontendDist": "../dist"
+  },
+  "app": {
+    "windows": [
+      {
+        "title": "sbtracker",
+        "width": 800,
+        "height": 1200
+      }
+    ],
+    "security": {
+      "csp": null
+    }
+  },
+  "bundle": {
+    "active": true,
+    "targets": "all",
+    "icon": [
+      "icons/flower.png",
+      "icons/flower.svg",
+      "icons/flower.ico"
+    ]
+  },
+  "plugins": {
+    "fs": {},
+    "updater": {
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEQzNkEzRDhBNzM0OTE5MEIKUldRTEdVbHppajFxMHdmSWI4eUUrbWNzMEJMc3FyNk1Yd2xaQ0cxYStpV05lN0dKTFEyWW11QUcK",
+      "endpoints": [
+        
+      ]
+    }
+  }
+}
