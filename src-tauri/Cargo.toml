@@ -1,6 +1,6 @@
 [package]
-name = "sbtracker"
-version = "0.1.0"
+name = "Solstice"
+version = "0.0.1"
 description = "A Tauri App"
 authors = ["you"]
 edition = "2021"
