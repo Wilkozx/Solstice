@@ -1,7 +1,7 @@
 {
   "$schema": "https://schema.tauri.app/config/2",
   "productName": "solstice",
-  "version": "0.1.9",
+  "version": "0.2.0",
   "identifier": "com.solstice.app",
   "build": {
     "beforeDevCommand": "pnpm dev",
@@ -35,7 +35,8 @@
     "fs": {},
     "updater": { 
       "active": true,
-      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IEEyOTU2QzhFNzA5RDgzQzMKUldURGc1MXdqbXlWb3FSbHBhVFB5UFdBbkVuaVVhNVoxWXkyM0xGZFZsbEw0TEdDKzVNRFZHblEK",
+      "dialog": true,
+      "pubkey": "dW50cnVzdGVkIGNvbW1lbnQ6IG1pbmlzaWduIHB1YmxpYyBrZXk6IDg1QzlBOTMxMEQ2NTk0QzQKUldURWxHVU5NYW5KaFkyaGJhb1lZQWpkQm5XOHA4czBRZEJ3eHBnT055RHdUMGltVithNmpXZmQK",
       "endpoints": [
         "https://github.com/Wilkozx/Solstice/releases/latest/download/latest.json"
       ],
