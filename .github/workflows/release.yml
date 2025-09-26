@@ -13,10 +13,10 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: macos-latest # Arm Macs
-            args: "--target aarch64-apple-darwin"
-          - platform: macos-latest # Intel Macs
-            args: "--target x86_64-apple-darwin"
+          # - platform: macos-latest # Arm Macs
+          #   args: "--target aarch64-apple-darwin"
+          # - platform: macos-latest # Intel Macs
+          #   args: "--target x86_64-apple-darwin"
           - platform: ubuntu-22.04 # Linux
             args: ""
           - platform: windows-latest # Windows
@@ -85,7 +85,7 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY  }}
-          TAURI_SIGNING_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD  }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD  }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Release ${{ github.ref_name }}"
