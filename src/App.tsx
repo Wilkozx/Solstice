@@ -5,8 +5,14 @@ import CustomersPage from "./components/customers/page";
 import { backupDatabase, cleanupBackups } from "./lib/backupManager";
 import { Button } from "./components/ui/button";
 
+import { runUpdater } from "./lib/updateManager";
+
 export default function App() {
   const navigate = useNavigate();
+
+  useEffect(() => {
+    runUpdater().catch(err => console.error("Updater error:", err));
+  }, []);
 
   useEffect(() => {
     async function scheduleDailyBackup() {
@@ -20,7 +26,10 @@ export default function App() {
         now.getFullYear(),
         now.getMonth(),
         now.getDate() + 1,
-        0, 0, 0, 0
+        0,
+        0,
+        0,
+        0
       );
       const msUntilMidnight = nextMidnight.getTime() - now.getTime();
 
@@ -29,10 +38,13 @@ export default function App() {
         backupDatabase();
         cleanupBackups(7);
         // Schedule next backups every 24 hours
-        setInterval(() => {
-          backupDatabase();
-          cleanupBackups(7);
-        }, 24 * 60 * 60 * 1000);
+        setInterval(
+          () => {
+            backupDatabase();
+            cleanupBackups(7);
+          },
+          24 * 60 * 60 * 1000
+        );
       }, msUntilMidnight);
     }
 
@@ -41,14 +53,10 @@ export default function App() {
 
   return (
     <div className="p-4">
-    {/* Button to go to backup/export page */}
-      <Button onClick={() => navigate("/backup")}>
-        Go to Backup / Export Database
-      </Button>
+      {/* Button to go to backup/export page */}
+      <Button onClick={() => navigate("/backup")}>Go to Backup / Export Database</Button>
 
       <Routes>
-
-
         <Route path="/" element={<CustomersPage />} />
         {/* <Route path="/customer/add" element={<AddCustomer />} /> */}
         {/* <Route path="/customer/:id" element={<EditCustomer />} /> */}
