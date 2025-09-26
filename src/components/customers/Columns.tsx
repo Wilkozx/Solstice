@@ -35,6 +35,11 @@ export const columns: ColumnDef<Customer>[] = [
     },
   },
   {
+    accessorKey: "plan_type",
+    header: "hasActivePlan",
+    cell: ({ row }) => (row.original.plan_type ? "true" : ""),
+  },
+  {
     id: "actions",
     header: "Actions",
     cell: ({ row }) => {

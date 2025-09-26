@@ -51,7 +51,10 @@ export function CustomerMinutesAndPlanForm({
   };
 
   const hasUnlimitedPlan =
-    activePlan && (activePlan.type === "unlimited_week" || activePlan.type === "unlimited_month");
+    activePlan &&
+    (activePlan.type === "unlimited_week" ||
+      activePlan.type === "unlimited_month" ||
+      activePlan.type === "custom");
 
   const adjustMinutes = (delta: number) => setMinutes(prev => Math.max(0, prev + delta));
   const hasChanges = minutes !== initialMinutes;
@@ -93,7 +96,7 @@ export function CustomerMinutesAndPlanForm({
     let end = new Date();
 
     if (type === "unlimited_week") end.setDate(start.getDate() + 7);
-    if (type === "unlimited_month") end.setMonth(start.getMonth() + 1);
+    if (type === "unlimited_month") end.setDate(start.getDate() + 28);
     if (type === "custom") {
       if (!customStart || !customEnd) {
         toast.error("Please select a start and end date");
@@ -128,8 +131,8 @@ export function CustomerMinutesAndPlanForm({
 
   return (
     <div className="p-6 bg-white border rounded-lg shadow-sm flex flex-col space-y-6">
-      <h2 className="text-xl font-semibold text-center">Minutes Remaining</h2>
-      <div className="text-6xl sm:text-7xl font-extrabold text-center my-4">
+      <h2 className="text-xl font-semibold text-center m-0">Minutes Remaining</h2>
+      <div className="text-6xl sm:text-7xl font-extrabold text-center my-8">
         {hasUnlimitedPlan ? "∞" : minutes}
       </div>
 
@@ -141,29 +144,35 @@ export function CustomerMinutesAndPlanForm({
       )}
 
       {/* Quick Adjust */}
-      <div className="flex flex-wrap justify-center gap-2">
-        {decrementOptions.map(d => (
-          <Button
-            key={`dec-${d}`}
-            variant="destructive"
-            size="sm"
-            onClick={() => adjustMinutes(d)}
-            disabled={hasUnlimitedPlan}
-          >
-            {d}
-          </Button>
-        ))}
-        {incrementOptions.map(d => (
-          <Button
-            key={`inc-${d}`}
-            variant="default"
-            size="sm"
-            onClick={() => adjustMinutes(d)}
-            disabled={hasUnlimitedPlan}
-          >
-            +{d}
-          </Button>
-        ))}
+      <div className="flex w-full gap-2 justify-between">
+        <div className="flex flex-1 gap-2">
+          {[...decrementOptions].reverse().map(d => (
+            <Button
+              key={`dec-${d}`}
+              variant="destructive"
+              size="default"
+              onClick={() => adjustMinutes(d)}
+              disabled={hasUnlimitedPlan}
+              className="flex-1"
+            >
+              {d}
+            </Button>
+          ))}
+        </div>
+        <div className="flex flex-1 gap-2 justify-end">
+          {incrementOptions.map(d => (
+            <Button
+              key={`inc-${d}`}
+              variant="default"
+              size="default"
+              onClick={() => adjustMinutes(d)}
+              disabled={hasUnlimitedPlan}
+              className="flex-1"
+            >
+              +{d}
+            </Button>
+          ))}
+        </div>
       </div>
 
       {/* Manual Adjust */}
@@ -210,10 +219,10 @@ export function CustomerMinutesAndPlanForm({
       {/* Plan Add Buttons */}
       <div className="flex gap-2 w-full mt-4">
         <Button className="flex-1" onClick={() => addPlan("unlimited_week")}>
-          Unlimited Week
+          Unlimited Week (starting today)
         </Button>
         <Button className="flex-1" onClick={() => addPlan("unlimited_month")}>
-          Unlimited Month
+          Unlimited Month (starting today)
         </Button>
       </div>
       <div className="flex flex-col sm:flex-row gap-2 w-full mt-2">
@@ -227,8 +236,8 @@ export function CustomerMinutesAndPlanForm({
         <h3 className="font-semibold">Plan History</h3>
         <ul className="divide-y divide-gray-200 rounded border">
           {plans.map((plan, idx) => {
-            const start = new Date(plan.start_date).toLocaleDateString();
-            const end = new Date(plan.end_date).toLocaleDateString();
+            const start = new Date(plan.start_date).toLocaleDateString("en-GB");
+            const end = new Date(plan.end_date).toLocaleDateString("en-GB");
             const isActive = activePlan?.id === plan.id;
             return (
               <li

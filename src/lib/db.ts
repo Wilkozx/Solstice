@@ -41,11 +41,37 @@ export async function getDb() {
   return dbInstance;
 }
 
-export async function getCustomers(): Promise<Customer[]> {
+export async function getCustomers(): Promise<(Customer & {
+  plan_id?: number | null;
+  plan_type?: string | null;
+  plan_start_date?: string | null;
+  plan_end_date?: string | null;
+})[]> {
   const db = await getDb();
-  const rows = await db.select("SELECT * FROM customers");
-  return rows as Customer[];
+
+  const nowIso = new Date().toISOString();
+
+  const rows = await db.select(
+    `
+    SELECT 
+      c.*,
+      p.id as plan_id,
+      p.type as plan_type,
+      p.start_date as plan_start_date,
+      p.end_date as plan_end_date
+    FROM customers c
+    LEFT JOIN customer_plans p
+      ON p.customer_id = c.id
+      AND p.start_date <= ?
+      AND p.end_date >= ?
+    ORDER BY c.id ASC
+    `,
+    [nowIso, nowIso]
+  );
+
+  return rows as any;
 }
+
 
 /**
  * Update a customer's name and lastname

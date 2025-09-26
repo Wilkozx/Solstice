@@ -13,6 +13,7 @@ export default function EditCustomer() {
   const navigate = useNavigate();
   const [customer, setCustomer] = useState<Customer | null>(null);
   const [error, setError] = useState("");
+  const [isUpdated, setIsUpdated] = useState(false); // track update state
 
   useEffect(() => {
     async function loadCustomer() {
@@ -32,28 +33,24 @@ export default function EditCustomer() {
 
   return (
     <div className="container mx-auto py-12 max-w-3xl space-y-8">
-      <Button variant="outline" onClick={() => navigate("/")}>
+      <Button
+        variant="outline"
+        onClick={() => navigate("/")}
+        disabled={isUpdated} // <-- disable when true
+      >
         &larr; Back to Customers
       </Button>
 
       <h1 className="text-3xl font-bold">Customer Information</h1>
 
-      {/* Display customer info form */}
       <CustomerInfoForm customer={customer} onUpdated={setCustomer} />
-      {/* <CustomerMinutesForm
-        customer={customer}
-        onUpdated={function (updatedMinutes: number): void {
-          throw new Error("Function not implemented.");
-        }}
-      ></CustomerMinutesForm>
-      <CustomerPlanForm customer={customer} /> */}
 
       <CustomerMinutesAndPlanForm
         customer={customer}
         onUpdated={function (): void {
-          throw new Error("Function not implemented.");
+          setIsUpdated(true);
         }}
-      ></CustomerMinutesAndPlanForm>
+      />
     </div>
   );
 }

@@ -1,4 +1,5 @@
 export type Customer = {
+  plan_type: any;
   id: number;
   name: string;    
   lastname?: string;   
