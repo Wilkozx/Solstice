@@ -1,8 +1,9 @@
 name: Release
+
 on:
   push:
     tags:
-      - "v*.*.*"
+      - "v*.*.*" # triggers only on version tags
 
 jobs:
   release:
@@ -12,20 +13,22 @@ jobs:
       fail-fast: false
       matrix:
         include:
-          - platform: "macos-latest" # Arm Macs
+          - platform: macos-latest # Arm Macs
             args: "--target aarch64-apple-darwin"
-          - platform: "macos-latest" # Intel Macs
+          - platform: macos-latest # Intel Macs
             args: "--target x86_64-apple-darwin"
-          - platform: "ubuntu-22.04" # Linux
+          - platform: ubuntu-22.04 # Linux
             args: ""
-          - platform: "windows-latest" # Windows
+          - platform: windows-latest # Windows
             args: ""
 
     runs-on: ${{ matrix.platform }}
+
     steps:
+      # Checkout repository
       - uses: actions/checkout@v4
 
-      # Set up Node.js
+      # Setup Node.js (for pnpm + frontend build)
       - name: Setup Node
         uses: actions/setup-node@v4
         with:
@@ -35,7 +38,7 @@ jobs:
       - name: Setup pnpm
         run: npm install -g pnpm
 
-      # Install Rust
+      # Install Rust toolchain
       - name: Install Rust stable
         uses: dtolnay/rust-toolchain@stable
         with:
@@ -72,21 +75,17 @@ jobs:
             libasound2-dev \
             patchelf
 
-      # Install Node dependencies
+      # Install frontend dependencies
       - name: Install dependencies
         run: pnpm install
 
-      # Build the Tauri app
-      - name: Build app
-        run: pnpm tauri build ${{ matrix.args }}
-
-      # Create GitHub release with signing for Windows
-      - name: Release
+      # Build + Release with signing
+      - name: Build and Release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
           TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PASSWORD: ${{ secrets.TAURI_SIGNING_PASSWORD }} # optional, if your cert has a password
+          TAURI_SIGNING_PASSWORD: ${{ secrets.TAURI_SIGNING_PASSWORD }} # optional if you set one
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "Release ${{ github.ref_name }}"
