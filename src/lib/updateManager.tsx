@@ -6,7 +6,6 @@ export async function runUpdater() {
     const update = await check();
 
     if (!update) {
-      toast.info("You are already running the latest version.");
       return;
     }
 
@@ -41,7 +40,7 @@ export async function runUpdater() {
           <button onClick={() => toast.dismiss()}>Later</button>
         </div>
       </div>,
-      { autoClose: false } 
+      { autoClose: false }
     );
   } catch (err) {
     toast.error("Update check failed: " + err);

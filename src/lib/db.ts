@@ -27,6 +27,16 @@ export async function getDb() {
       )
     `);
 
+    await dbInstance.execute(`
+      CREATE TABLE IF NOT EXISTS customer_plans (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        customer_id INTEGER NOT NULL,
+        type TEXT NOT NULL,               -- 'unlimited_week', 'unlimited_month', 'custom'
+        start_date TEXT NOT NULL,
+        end_date TEXT NOT NULL,
+        FOREIGN KEY(customer_id) REFERENCES customers(id) ON DELETE CASCADE
+      )
+    `);
   }
   return dbInstance;
 }
@@ -159,4 +169,37 @@ export async function addTransaction(customer_id: number, change: number) {
 
   const newMinutes = rows[0].minutes_remaining + change;
   await db.execute("UPDATE customers SET minutes_remaining = ? WHERE id = ?", [newMinutes, customer_id]);
+}
+
+export async function getCustomerPlans(customer_id: number) {
+  const db = await getDb();
+  const rows = await db.select(
+    "SELECT * FROM customer_plans WHERE customer_id = ? ORDER BY start_date DESC",
+    [customer_id]
+  );
+  return rows;
+}
+
+export async function addCustomerPlan(
+  customer_id: number,
+  type: string,
+  start_date: string,
+  end_date: string
+) {
+  const db = await getDb();
+  await db.execute(
+    "INSERT INTO customer_plans (customer_id, type, start_date, end_date) VALUES (?, ?, ?, ?)",
+    [customer_id, type, start_date, end_date]
+  );
+}
+
+export async function removeCustomerPlan(plan_id: number) {
+  const db = await getDb();
+
+  // Optional: check if plan exists
+  const rows = await db.select("SELECT * FROM customer_plans WHERE id = ?", [plan_id]);
+  if (rows.length === 0) throw new Error("Plan not found");
+
+  // Delete the plan
+  await db.execute("DELETE FROM customer_plans WHERE id = ?", [plan_id]);
 }

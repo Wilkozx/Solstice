@@ -8,6 +8,12 @@ import { backupDatabase, cleanupBackups } from "./lib/backupManager";
 import { Button } from "./components/ui/button";
 import { runUpdater } from "./lib/updateManager";
 
+import AddCustomer from "./pages/AddCustomer";
+import EditCustomer from "./pages/EditCustomer";
+
+import ExportDatabase from "./pages/ExportDatabase";
+import CustomerHistory from "./pages/CustomerHistory";
+
 export default function App() {
   const navigate = useNavigate();
 
@@ -50,15 +56,21 @@ export default function App() {
 
   return (
     <div className="p-4">
-      <ToastContainer position="top-right" autoClose={false} />
+      <ToastContainer
+        position="top-right"
+        autoClose={6000}
+        closeOnClick={true}
+        pauseOnHover={true}
+        draggable={true}
+      />
       <Button onClick={() => navigate("/backup")}>Go to Backup / Export Database</Button>
 
       <Routes>
         <Route path="/" element={<CustomersPage />} />
-        {/* <Route path="/customer/add" element={<AddCustomer />} /> */}
-        {/* <Route path="/customer/:id" element={<EditCustomer />} /> */}
-        {/* <Route path="/customer/:id/history" element={<CustomerHistory/>} /> */}
-        {/* <Route path="/backup" element={<ExportDatabase/>} /> */}
+        <Route path="/customer/add" element={<AddCustomer />} />
+        <Route path="/customer/:id" element={<EditCustomer />} />
+        <Route path="/customer/:id/history" element={<CustomerHistory />} />
+        <Route path="/backup" element={<ExportDatabase />} />
       </Routes>
     </div>
   );
