@@ -14,7 +14,6 @@ import { toast } from "react-toastify";
 
 export function CustomerMinutesAndPlanForm({
   customer,
-  onUpdated,
 }: {
   customer: Customer;
   onUpdated: (updatedMinutes: number) => void;

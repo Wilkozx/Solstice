@@ -6,8 +6,6 @@ import { Button } from "@/components/ui/button";
 import { Customer } from "@/types";
 import { getCustomers } from "@/lib/db";
 import { CustomerInfoForm } from "@/components/customers/CustomerInfoForm";
-import { CustomerMinutesForm } from "@/components/customers/CustomerMinutesForm";
-import { CustomerPlanForm } from "@/components/customers/CustomerPlanForm";
 import { CustomerMinutesAndPlanForm } from "@/components/customers/CustomersMinutesAndPlan";
 
 export default function EditCustomer() {
@@ -52,7 +50,7 @@ export default function EditCustomer() {
 
       <CustomerMinutesAndPlanForm
         customer={customer}
-        onUpdated={function (updatedMinutes: number): void {
+        onUpdated={function (): void {
           throw new Error("Function not implemented.");
         }}
       ></CustomerMinutesAndPlanForm>
